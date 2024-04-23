@@ -32,6 +32,6 @@ Comentarios:
   controlar que se resibe y como se resibe.
 3. El Landscape actualmente no es considerada una prioridad 
   pero se podria agregar en versiones futuras.
-4. Al Landscape solo le hace falta diseño fuera de eso
+4. Al Portrait solo le hace falta diseño fuera de eso
   esta terminado.
 --------------------------------------------------------------
