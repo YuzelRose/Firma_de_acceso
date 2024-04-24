@@ -35,3 +35,7 @@ Comentarios:
 4. Al Portrait solo le hace falta diseño fuera de eso
   esta terminado.
 --------------------------------------------------------------
+Agradecimientos:
+--------------------------------------------------------------
+1. Este proyecto usa in portación zxing para la lectura de QR, REPOSITORIO:
+https://github.com/zxing/zxing 
