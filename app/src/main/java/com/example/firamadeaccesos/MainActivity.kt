@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     // Mostrar los datos escaneados
     private var Dbug = true
+    // Botones activados
     private var BRed = true
     private var BUnd = true
 
@@ -39,9 +40,6 @@ class MainActivity : AppCompatActivity() {
     private val xCordsGet = mutableListOf<Int>()
     private val yCordsGet = mutableListOf<Int>()
 
-    private val xCordsSend = mutableListOf<Int>()
-    private val yCordsSend = mutableListOf<Int>()
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +55,8 @@ class MainActivity : AppCompatActivity() {
         btnCls.setOnClickListener {
             dibFun.dibCls(firma,xCords,yCords,Dbug,btnScan)
             Touch = 0
-            BUnd = true
-            BRed = true
+            BUnd = false
+            BRed = false
             btnUn.isEnabled = false
             btnRed.isEnabled = false
             if (Dbug) {
@@ -103,7 +101,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        firma.setOnTouchListener { view, event ->
+        firma.setOnTouchListener { view, event ->//
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     Log.d("Touch cord", "Pulsacion")
@@ -127,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                         xCordsGet.add(x)
                         yCordsGet.add(y)
                         if (Dbug) {
-                            Log.d("Touch cord", "Coordenadas X: $x, Y: $y")
+                            Log.d("Touch cord", "Coordenadas: X: $x, Y: $y")
                         }
                         btnCls.isEnabled = true
                         btnUn.isEnabled = true
@@ -170,14 +168,15 @@ class MainActivity : AppCompatActivity() {
                             val filaY = yCords[index]
                             for (i in filaX.indices) {
                                 Log.d("Cordenadas", "x: ${filaX[i]} y: ${filaY[i]}")
-
                             }
                         }
                     }
                     val usrIn = it.contents
                     Toast.makeText(this, "Espere un poco", Toast.LENGTH_SHORT).show()
                     val contDat = qrFun.qrInf(usrIn, this,Dbug)//Obtencion de los datos del QR
-                    jsonFun.ProsData(contDat,xCords,yCords)
+                    jsonFun.ProsData(contDat,xCords,yCords,Dbug)// Procesamiento de la informacion para el envio
+                    Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
+                    FinalFun()
                 }
             } ?: run {
                 Toast.makeText(this, "Lectura incorrecta", Toast.LENGTH_SHORT).show()
@@ -189,4 +188,18 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun FinalFun(){
+        dibFun.dibCls(firma,xCords,yCords,Dbug,btnScan)
+        Touch = 0
+        BUnd = false
+        BRed = false
+        btnUn.isEnabled = false
+        btnRed.isEnabled = false
+        if (Dbug) {
+            Log.d("Touch cord", "Touch: $Touch")
+
+        }
+    }
+
 }
