@@ -37,5 +37,6 @@ Comentarios:
 --------------------------------------------------------------
 Agradecimientos:
 --------------------------------------------------------------
-1. Este proyecto usa in portación zxing para la lectura de QR, REPOSITORIO:
-https://github.com/zxing/zxing 
+1. Este proyecto usa una inportación de zxing para la lectura de QR, REPOSITORIO:
+https://github.com/zxing/zxing
+2. Este proyecto usa una inportación de DrawingCanvas-Library para la visualización de la firma, REPOSITORIO: https://github.com/Miihir79/DrawingCanvas-Library
