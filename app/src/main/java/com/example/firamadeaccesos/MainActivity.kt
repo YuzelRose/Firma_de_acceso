@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                     val contDat = qrFun.qrInf(usrIn, this,Dbug)//Obtencion de los datos del QR
                     jsonFun.ProsData(contDat,xCords,yCords,Dbug)// Procesamiento de la informacion para el envio
                     Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
-                    FinalFun()
+                    finalFun()
                 }
             } ?: run {
                 Toast.makeText(this, "Lectura incorrecta", Toast.LENGTH_SHORT).show()
@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun FinalFun(){
+    fun finalFun(){
         dibFun.dibCls(firma,xCords,yCords,Dbug,btnScan)
         Touch = 0
         BUnd = false
