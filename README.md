@@ -3,7 +3,7 @@ Avances
 ----------------------------------------------------------
 | Activity | Avance |
 |---|---|
-| MainActivity | 90% |
+| MainActivity | 100% |
 | QrFun | 90% |
 | DivFun | 100% |
 | jsonFun | 60% |
@@ -21,18 +21,16 @@ Problemas a solucionar:
 ----------------------------------------------------------
 Trabajando en:
 ----------------------------------------------------------
-1. Terminar el MainActivity
-2. Datos resibidos del Qr
+1. Datos resibidos del Qr
+2. Envio de datos
 ----------------------------------------------------------
 Comentarios:
 ----------------------------------------------------------
-1. Ya deberia de funcionar el MainActivity solo faltan
-  un par de lineas para facilitar el registro de usuarios.
-2. El codigo de recepcion de datos del Qr funciona solo falta 
+1. El codigo de recepcion de datos del Qr funciona solo falta 
   controlar que se resibe y como se resibe.
-3. El Landscape actualmente no es considerada una prioridad 
+2. El Landscape actualmente no es considerada una prioridad 
   pero se podria agregar en versiones futuras.
-4. Al Portrait solo le hace falta diseño fuera de eso
+3. Al Portrait solo le hace falta diseño fuera de eso
   esta terminado.
 --------------------------------------------------------------
 Agradecimientos:
