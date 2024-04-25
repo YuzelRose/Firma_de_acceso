@@ -38,7 +38,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:text="Firme en el recuadro, luego pulse el botón inferior y escanee el QR de la página."
+        android:text="Firme en el recuadro, luego pulse el botón inferior y escanee el QR generado en DIGITALINK.."
         android:textAlignment="center"
         android:textColor="#A5A0A0"
         app:layout_constraintBottom_toTopOf="@+id/btnEscanear"
