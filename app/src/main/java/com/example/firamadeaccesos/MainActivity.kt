@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             BRed = false
             btnUn.isEnabled = false
             btnRed.isEnabled = false
+            btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
             if (Dbug) {
                 Log.d("Touch cord", "Touch: $Touch")
 
@@ -193,6 +194,7 @@ class MainActivity : AppCompatActivity() {
             BRed = false
             btnUn.isEnabled = false
             btnRed.isEnabled = false
+            btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
             if (Dbug) {
                 Log.d("Touch cord", "Touch: $Touch")
 
