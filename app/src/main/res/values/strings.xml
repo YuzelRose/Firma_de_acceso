@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DIGITALINK</string>
+    <string name="enviar_archivo">Enviar archivo</string>
+    <string name="enviar">Enviar</string>
+    <string name="borrar">Borrar</string>
+    <string name="rehacer">Rehacer</string>
+    <string name="firme_en_el_recuadro_y_luego_pulse_el_bot_n_inferior">Firme en el recuadro y luego pulse el botón inferior.</string>
+    <string name="deshacer">Deshacer</string>
 </resources>
