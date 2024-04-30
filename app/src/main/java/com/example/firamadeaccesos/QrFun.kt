@@ -1,5 +1,6 @@
-package com.example.firamadeaccesos
+@file:Suppress("DEPRECATION")
 
+package com.example.firamadeaccesos
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -17,16 +18,17 @@ class QrFun {
         qrScan.initiateScan()
         return qrScan
     }
+
     /* URL ? access_key= 13_digitos Modo*/
-    fun qrInf(usrIn: String, con: Context, Dbug: Boolean): Array<String> {//Obtener informacion del QR
+    fun qrInf(usrIn: String, con: Context, dbug: Boolean): Array<String> {//Obtener informacion del QR
         val contDat = arrayOf("", "") //KEY, MOD
         try {
-            for (x in 1..13){
+            for (x in 0 until 13) {
                 contDat[0] = contDat[0] + usrIn[x]//Key
             }
             contDat[1] = contDat[1] + usrIn[usrIn.length - 1]//Mod
-            if (Dbug){
-                Log.d("QR","Resibido: $usrIn")
+            if (dbug) {
+                Log.d("QR", "Resibido: $usrIn")
                 Log.d("QR", "Key: ${contDat[0]}, Mod: ${contDat[1]}")
             }
         } catch (e: Exception) {

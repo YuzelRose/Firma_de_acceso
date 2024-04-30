@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.firamadeaccesos
 
 import android.annotation.SuppressLint
@@ -7,24 +9,31 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import com.google.zxing.integration.android.IntentIntegrator
-import com.mihir.drawingcanvas.drawingView;
+import com.mihir.drawingcanvas.drawingView
 
 class MainActivity : AppCompatActivity() {
 
     // Mostrar los datos escaneados
-    private var Dbug = true
+    private var dbug = true
     // Botones activados
-    private var BRed = true
-    private var BUnd = true
+    private var bRed = true
+    private var bUnd = true
 
-    private var Touch = 0
+    private var touch: Int = 0
+    private var cnt: Int = 0
 
-    private lateinit var btnScan: Button
+
+    var contDat: Array<String> = arrayOf("", "")
+
+    private lateinit var txtCuenta: TextView
+    private lateinit var btnSend: Button
     private lateinit var btnUn: Button
     private lateinit var btnRed: Button
     private lateinit var btnCls: Button
@@ -32,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private val qrFun = QrFun()
     private val dibFun = DibFun()
-    private val jsonFun = jsonFun()
+    private val jsonFun = JsonFun()
 
     private val xCords = mutableListOf<MutableList<Int>>()
     private val yCords = mutableListOf<MutableList<Int>>()
@@ -40,47 +49,81 @@ class MainActivity : AppCompatActivity() {
     private val xCordsGet = mutableListOf<Int>()
     private val yCordsGet = mutableListOf<Int>()
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //Firma
         firma = findViewById(R.id.drawing_view)
         dibFun.dibini(firma)//Inicializar los parametros del drawingView
+        qrFun.qrIniLec(this)//Abre el scaner
+        txtCuenta = findViewById(R.id.txtCuenta)
         //Lector de QRs
-        btnScan = findViewById(R.id.btnEscanear)
-        btnScan.setOnClickListener { qrFun.qrIniLec(this) }
+        btnSend = findViewById(R.id.btnSend)
+        btnSend.setOnClickListener {
+            try {
+                if (dbug){// Se muestran las cordenadas guardadas
+                    for ((index, filaX) in xCords.withIndex()) {
+                        val filaY = yCords[index]
+                        for (i in filaX.indices) {
+                            Log.d("Cordenadas", "x: ${filaX[i]} y: ${filaY[i]}")
+                        }
+                    }
+                }
+                cnt--
+                txtCuenta.text = "Firmas faltantes: ${cnt.toString()}"
+                jsonFun.prosData(contDat,xCords,yCords,dbug)// Procesamiento de la informacion para el envio
+
+                Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
+            } catch (e: Exception){
+                if (dbug){
+                    Log.d("Error Send", "Error: ${e.message}")
+                }
+                Toast.makeText(this, "Error al enviar datos: ${e.message}", Toast.LENGTH_SHORT).show()
+            } finally {
+                dibFun.dibCls(firma,xCords,yCords,dbug,btnSend)
+                touch = 0
+                bUnd = false
+                bRed = false
+                btnUn.isEnabled = false
+                btnRed.isEnabled = false
+                btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
+                if (dbug) {
+                    Log.d("Touch cord", "Touch: $touch")
+                }
+            }
+        }
         //limpiar
         btnCls = findViewById(R.id.btnCls)
         btnCls.setOnClickListener {
-            dibFun.dibCls(firma,xCords,yCords,Dbug,btnScan)
-            Touch = 0
-            BUnd = false
-            BRed = false
+            dibFun.dibCls(firma,xCords,yCords,dbug,btnSend)
+            touch = 0
+            bUnd = false
+            bRed = false
             btnUn.isEnabled = false
             btnRed.isEnabled = false
-            btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
-            if (Dbug) {
-                Log.d("Touch cord", "Touch: $Touch")
+            btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
+            if (dbug) {
+                Log.d("Touch cord", "Touch: $touch")
 
             }
         }
         //Deshacer
         btnUn = findViewById(R.id.btnUn)
         btnUn.setOnClickListener {
-            if (BUnd) {
-                dibFun.dibUn(firma,Dbug)
-                Touch--
-                if (Touch>=0){
-                    btnScan.isEnabled = false;
-                    btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
+            if (bUnd) {
+                dibFun.dibUn(firma,dbug)
+                touch--
+                if (touch>=0){
+                    btnSend.isEnabled = false
+                    btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
                 }
-                BUnd = false
-                BRed = true
+                bUnd = false
+                bRed = true
                 btnUn.isEnabled = false
                 btnRed.isEnabled = true
-                if (Dbug) {
-                    Log.d("Touch cord", "Touch: $Touch")
+                if (dbug) {
+                    Log.d("Touch cord", "Touch: $touch")
 
                 }
             }
@@ -88,15 +131,15 @@ class MainActivity : AppCompatActivity() {
         //Rehacer
         btnRed = findViewById(R.id.btnRed)
         btnRed.setOnClickListener {
-            if (BRed) {
-                dibFun.dibRed(firma,Dbug)
-                Touch++
-                BRed = false
-                BUnd = true
+            if (bRed) {
+                dibFun.dibRed(firma,dbug)
+                touch++
+                bRed = false
+                bUnd = true
                 btnRed.isEnabled = false
                 btnUn.isEnabled = true
-                if (Dbug) {
-                    Log.d("Touch cord", "Touch: $Touch")
+                if (dbug) {
+                    Log.d("Touch cord", "Touch: $touch")
 
                 }
             }
@@ -106,14 +149,14 @@ class MainActivity : AppCompatActivity() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     Log.d("Touch cord", "Pulsacion")
-                    BRed = false
-                    BUnd = true
+                    bRed = false
+                    bUnd = true
                     btnRed.isEnabled = false
                     btnUn.isEnabled = true
-                    if (xCords.getOrNull(Touch)?.isNotEmpty() == true) {
-                        xCords.removeAt(Touch)
-                        yCords.removeAt(Touch)
-                        if (Dbug) {
+                    if (xCords.getOrNull(touch)?.isNotEmpty() == true) {
+                        xCords.removeAt(touch)
+                        yCords.removeAt(touch)
+                        if (dbug) {
                             Log.d("Touch cord", "Datos sobreescritos")
                         }
                     }
@@ -125,22 +168,22 @@ class MainActivity : AppCompatActivity() {
                     if (x >= 0 && x <= firma.width && y >= 0 && y <= firma.height) {
                         xCordsGet.add(x)
                         yCordsGet.add(y)
-                        if (Dbug) {
+                        if (dbug) {
                             Log.d("Touch cord", "Coordenadas: X: $x, Y: $y")
                         }
                         btnCls.isEnabled = true
                         btnUn.isEnabled = true
                         btnRed.isEnabled = true
-                        btnScan.isEnabled = true
-                        btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFA5A0A0.toInt())
+                        btnSend.isEnabled = true
+                        btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFA5A0A0.toInt())
                     }
                 }
                 MotionEvent.ACTION_UP -> {
                     xCords.add(xCordsGet)
                     yCords.add(yCordsGet)
-                    Touch++
-                    if (Dbug) {
-                        Log.d("Touch cord", "Fin de la pulsacion siguiente posicion: $Touch")
+                    touch++
+                    if (dbug) {
+                        Log.d("Touch cord", "Fin de la pulsacion siguiente posicion: $touch")
                     }
                 }
             }
@@ -156,6 +199,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {//Resultado del scaner
         super.onActivityResult(requestCode, resultCode, data)
         try {
@@ -164,40 +208,25 @@ class MainActivity : AppCompatActivity() {
                 if (it.contents.isNullOrEmpty()) {
                     Toast.makeText(this, "Qr no valido", Toast.LENGTH_SHORT).show()
                 } else {
-                    if (Dbug){// Se muestran las cordenadas guardadas
-                        for ((index, filaX) in xCords.withIndex()) {
-                            val filaY = yCords[index]
-                            for (i in filaX.indices) {
-                                Log.d("Cordenadas", "x: ${filaX[i]} y: ${filaY[i]}")
-                            }
-                        }
-                    }
                     val usrIn = it.contents
                     Toast.makeText(this, "Espere un poco", Toast.LENGTH_SHORT).show()
-                    val contDat = qrFun.qrInf(usrIn, this,Dbug)//Obtencion de los datos del QR
-                    jsonFun.ProsData(contDat,xCords,yCords,Dbug)// Procesamiento de la informacion para el envio
-                    Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
+                    contDat = qrFun.qrInf(usrIn, this,dbug)//Obtencion de los datos del QR
+                    if (contDat[1] == "&"){
+                        cnt=3
+                        txtCuenta.text = "Firmas faltantes: ${cnt.toString()}"
+                        txtCuenta.isVisible = true
+                    } else{
+                        txtCuenta.isVisible = false
+                    }
                 }
             } ?: run {
                 Toast.makeText(this, "Lectura incorrecta", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            if (Dbug){
+            if (dbug){
                 Log.d("Error ActivityResult", "Error: ${e.message}")
             }
-            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-        finally {
-            dibFun.dibCls(firma,xCords,yCords,Dbug,btnScan)
-            Touch = 0
-            BUnd = false
-            BRed = false
-            btnUn.isEnabled = false
-            btnRed.isEnabled = false
-            btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
-            if (Dbug) {
-                Log.d("Touch cord", "Touch: $Touch")
-            }
+            Toast.makeText(this, "Error al resibir el QR: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 }

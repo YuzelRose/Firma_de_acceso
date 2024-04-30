@@ -1,30 +1,30 @@
 package com.example.firamadeaccesos
 
 import android.util.Log
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.net.HttpURLConnection
-import kotlinx.serialization.*
 import java.net.URL
 
-class jsonFun {
-    fun ProsData(contDat: Array<String>, xCords: MutableList<MutableList<Int>>, yCords: MutableList<MutableList<Int>>,Dbug: Boolean) {
-        val USR = contDat[0]
-        val URL = contDat[1]
-        val Xcord: List<Int> = xCords.flatten()
-        val Ycord: List<Int> = yCords.flatten()
-        SendJson(USR,URL,Xcord,Ycord,Dbug)
+class JsonFun {
+    private var constURL = "https://djackpot.rodokizzzdev.com/digitalink/firmas/Enlace/recibir.php"
+    fun prosData(contDat: Array<String>, xCords: MutableList<MutableList<Int>>, yCords: MutableList<MutableList<Int>>,dbug: Boolean) {
+        val key = contDat[0]
+        val xCord: List<Int> = xCords.flatten()
+        val yCord: List<Int> = yCords.flatten()
+        sendJson(key,constURL,xCord,yCord,dbug)
     }
+    data class VerifDJson(val accesKey: String, val xCordList: List<Int>, val yCordList: List<Int>)
 
-    data class VerifDJson(val USR: String, val Xcord: List<Int>, val Ycord: List<Int>)
 
-    fun SendJson(USR:String,URL:String,x:List<Int>,y:List<Int>,Dbug: Boolean){
-        if (Dbug){
+    private fun sendJson(key:String, constURL:String, x:List<Int>, y:List<Int>, dbug: Boolean){
+        if (dbug){
             Log.d("JSON", "Cargando")
         }
-        val data = VerifDJson(USR,x,y)
+        val data = VerifDJson(key,x,y)
         val jsonString = Json.encodeToString(data)
 
-        val url = URL(URL)
+        val url = URL(constURL)
         val connection = url.openConnection() as HttpURLConnection
 
         connection.requestMethod = "POST"
@@ -37,11 +37,11 @@ class jsonFun {
         val responseCode = connection.responseCode
         if (responseCode == HttpURLConnection.HTTP_OK) {
             val response = connection.inputStream.bufferedReader().use { it.readText() }
-            if (Dbug){
+            if (dbug){
                 Log.d("Response", "Response: $response")
             }
         } else {
-            if (Dbug){
+            if (dbug){
                 Log.d("Response", "Error sending data: $responseCode")
             }
         }

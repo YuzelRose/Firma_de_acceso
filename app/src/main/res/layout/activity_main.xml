@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnEscanear"
+        android:id="@+id/btnSend"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="wrap_content"
         android:layout_height="65dp"
@@ -41,7 +41,7 @@
         android:text="@string/firme_en_el_recuadro_y_luego_pulse_el_bot_n_inferior"
         android:textAlignment="center"
         android:textColor="#A5A0A0"
-        app:layout_constraintBottom_toTopOf="@+id/btnEscanear"
+        app:layout_constraintBottom_toTopOf="@+id/btnSend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -143,6 +143,17 @@
 
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <TextView
+        android:id="@+id/txtCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#A5A0A0"
+        android:text="@string/firmas_faltantes"
+        app:layout_constraintBottom_toTopOf="@+id/btnSend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txvInstruc" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

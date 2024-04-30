@@ -6,4 +6,5 @@
     <string name="rehacer">Rehacer</string>
     <string name="firme_en_el_recuadro_y_luego_pulse_el_bot_n_inferior">Firme en el recuadro y luego pulse el botón inferior.</string>
     <string name="deshacer">Deshacer</string>
+    <string name="firmas_faltantes">Firmas faltantes:</string>
 </resources>

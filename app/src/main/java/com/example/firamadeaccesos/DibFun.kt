@@ -12,25 +12,25 @@ class DibFun {
         firma.setSizeForBrush(4)
         firma.erase(R.color.white)
     }
-    fun dibUn(firma: drawingView, Dbug: Boolean) {
+    fun dibUn(firma: drawingView, dbug: Boolean) {
         firma.undo()
-        if (Dbug){
+        if (dbug){
             Log.d("Touch cord", "Deshacer")
         }
     }
-    fun dibRed(firma: drawingView, Dbug: Boolean) {
+    fun dibRed(firma: drawingView, dbug: Boolean) {
         firma.redo()
-        if (Dbug){
+        if (dbug){
             Log.d("Touch cord", "Rehacer")
         }
     }
-    fun dibCls(firma: drawingView, xCords: MutableList<MutableList<Int>>, ycords: MutableList<MutableList<Int>>, Dbug: Boolean, btnScan: Button) {
+    fun dibCls(firma: drawingView, xCords: MutableList<MutableList<Int>>, ycords: MutableList<MutableList<Int>>, dbug: Boolean, btnScan: Button) {
         firma.clearDrawingBoard()
         xCords.clear()
         ycords.clear()
-        btnScan.isEnabled = false;
+        btnScan.isEnabled = false
         btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
-        if (Dbug){
+        if (dbug){
             if (xCords.isEmpty() && ycords.isEmpty()){
                 Log.d("Touch cord", "Limpio")
             }
