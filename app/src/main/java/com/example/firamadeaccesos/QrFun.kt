@@ -7,7 +7,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 
 class QrFun {
 
-    private val prom = "Entre a DIGITALINK y escanee el QR generado."
+    private val prom = "Entré a DIGITALINK y escaneé el QR generado."
 
     fun qrIniLec(mainActivity: MainActivity): IntentIntegrator {// Iniciar lectura del QR
         val qrScan = IntentIntegrator(mainActivity)
