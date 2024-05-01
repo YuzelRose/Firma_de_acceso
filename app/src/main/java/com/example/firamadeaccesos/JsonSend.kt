@@ -13,7 +13,7 @@ class JsonSend {
     private var y = mutableListOf<MutableList<Int>>()
     private var cntpriv: Int = 0
     fun prosData(contDat: Array<String>, xCords: MutableList<MutableList<Int>>, yCords: MutableList<MutableList<Int>>, dbug: Boolean, cnt: Int) {
-        val key = contDat[0]
+        val key = constURL + "?access_key=" + contDat[0]
         val xCord: List<Int> = xCords.flatten()
         val yCord: List<Int> = yCords.flatten()
         x.add(xCord.toMutableList())
@@ -26,17 +26,17 @@ class JsonSend {
         cntpriv++
         if (cnt == 0) {
             if (dbug) {
-                Log.d("JSONSEND", "Enviando Json a $constURL")
-                Log.d("JSONSEND", "Key: $key")
+                Log.d("JSONSEND", "Enviando Json a $key")
             }
-            sendJson(key,dbug)
+            sendJson(key,dbug,contDat[0])
             cntpriv = 0
+            x.clear()
+            y.clear()
         }
     }
-    private fun sendJson(key:String, dbug: Boolean) {
+    private fun sendJson(key: String, dbug: Boolean, s: String) {
 
         val jsonObject = JSONObject().apply {//Creacion de un objeto JSON
-            put("key", key)
             put("xCord", x)
             put("yCord", y)
         }
@@ -45,7 +45,8 @@ class JsonSend {
         //Solicitud
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url(constURL)
+            .url(key)
+            .addHeader("access_key", s)
             .post(jsonBody.toRequestBody(mediaType))
             .build()
 
