@@ -6,7 +6,7 @@ Avances
 | MainActivity | 100% |
 | QrFun | 100% |
 | DivFun | 100% |
-| jsonFun | 60% |
+| jsonFun | 90% |
 ----------------------------------------------------------
 | XML | Avance |
 |---|---|
@@ -15,15 +15,17 @@ Avances
 ----------------------------------------------------------
 Problemas a solucionar:
 ----------------------------------------------------------
-1. Envio de datos Mediante httpRequest.
+1. Comprobar que los datos esten llegando correctamente a su destino.
 ----------------------------------------------------------
 Trabajando en:
 ----------------------------------------------------------
-1. Envio de datos
+1. Envio de datos.
 ----------------------------------------------------------
 Comentarios:
 ----------------------------------------------------------
-1. El Landscape actualmente no es considerada una prioridad 
+1. El sistema está enviando los datos de forma correcta, solo falta hacer las comprobaciones pertinentes.
+2. Se espera terminar el desarrollo principal en breve.
+3. El Landscape actualmente no es considerada una prioridad 
   pero se podria agregar en versiones futuras.
 --------------------------------------------------------------
 Agradecimientos:
@@ -31,3 +33,4 @@ Agradecimientos:
 1. Este proyecto usa una inportación de zxing para la lectura de QR, REPOSITORIO:
 https://github.com/zxing/zxing
 2. Este proyecto usa una inportación de DrawingCanvas-Library para la visualización de la firma, REPOSITORIO: https://github.com/Miihir79/DrawingCanvas-Library
+3.Este proyecto usa OkHttp para la comunicación con el sitio web. Sitio: https://square.github.io/okhttp/#okhttp.
