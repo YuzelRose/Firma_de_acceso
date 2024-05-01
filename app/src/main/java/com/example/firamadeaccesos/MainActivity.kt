@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                jsonFun.prosData(contDat,xCords,yCords,dbug)// Procesamiento de la informacion para el envio
+                jsonFun.prosData(contDat,xCords,yCords,dbug,cnt)// Procesamiento de la informacion para el envio
                 Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
             } catch (e: Exception){
                 if (dbug){
