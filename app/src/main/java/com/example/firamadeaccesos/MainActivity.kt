@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var cnt: Int = 0
 
 
-    var contDat: Array<String> = arrayOf("", "")
+    private var contDat: Array<String> = arrayOf("", "")
 
     private lateinit var txtCuenta: TextView
     private lateinit var btnSend: Button
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private val qrFun = QrFun()
     private val dibFun = DibFun()
-    private val jsonFun = JsonFun()
+    private val jsonFun = JsonSend()
 
     private val xCords = mutableListOf<MutableList<Int>>()
     private val yCords = mutableListOf<MutableList<Int>>()
@@ -49,19 +49,30 @@ class MainActivity : AppCompatActivity() {
     private val xCordsGet = mutableListOf<Int>()
     private val yCordsGet = mutableListOf<Int>()
 
-    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
+    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //Firma
         firma = findViewById(R.id.drawing_view)
         dibFun.dibini(firma)//Inicializar los parametros del drawingView
-        qrFun.qrIniLec(this)//Abre el scaner
+        //Abre el scaner
+        qrFun.qrIniLec(this)
+        //TextViews
         txtCuenta = findViewById(R.id.txtCuenta)
         //Lector de QRs
         btnSend = findViewById(R.id.btnSend)
         btnSend.setOnClickListener {
             try {
+                cnt--
+                txtCuenta.text = "Firmas faltantes: $cnt"
+                if (cnt <= 0) {//Reiniciar para resibir una nueva firma
+                    Toast.makeText(this,"Firmas completadas", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    finish()
+                }
                 if (dbug){// Se muestran las cordenadas guardadas
                     for ((index, filaX) in xCords.withIndex()) {
                         val filaY = yCords[index]
@@ -70,10 +81,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                cnt--
-                txtCuenta.text = "Firmas faltantes: ${cnt.toString()}"
                 jsonFun.prosData(contDat,xCords,yCords,dbug)// Procesamiento de la informacion para el envio
-
                 Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
             } catch (e: Exception){
                 if (dbug){
@@ -81,15 +89,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 Toast.makeText(this, "Error al enviar datos: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
-                dibFun.dibCls(firma,xCords,yCords,dbug,btnSend)
-                touch = 0
-                bUnd = false
-                bRed = false
-                btnUn.isEnabled = false
-                btnRed.isEnabled = false
-                btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
-                if (dbug) {
-                    Log.d("Touch cord", "Touch: $touch")
+                if (cnt > 0) {
+                    dibFun.dibCls(firma,xCords,yCords,dbug,btnSend)
+                    touch = 0
+                    bUnd = false
+                    bRed = false
+                    btnUn.isEnabled = false
+                    btnRed.isEnabled = false
+                    btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
+                    if (dbug) {
+                        Log.d("Touch cord", "Touch: $touch")
+                    }
                 }
             }
         }
@@ -199,6 +209,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {//Resultado del scaner
         super.onActivityResult(requestCode, resultCode, data)
@@ -207,15 +218,17 @@ class MainActivity : AppCompatActivity() {
             result?.let {
                 if (it.contents.isNullOrEmpty()) {
                     Toast.makeText(this, "Qr no valido", Toast.LENGTH_SHORT).show()
+                    qrFun.qrIniLec(this)
                 } else {
                     val usrIn = it.contents
                     Toast.makeText(this, "Espere un poco", Toast.LENGTH_SHORT).show()
                     contDat = qrFun.qrInf(usrIn, this,dbug)//Obtencion de los datos del QR
                     if (contDat[1] == "&"){
-                        cnt=3
-                        txtCuenta.text = "Firmas faltantes: ${cnt.toString()}"
+                        cnt=5
+                        txtCuenta.text = "Firmas faltantes: $cnt"
                         txtCuenta.isVisible = true
                     } else{
+                        cnt=1
                         txtCuenta.isVisible = false
                     }
                 }
