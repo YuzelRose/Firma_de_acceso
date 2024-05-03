@@ -53,6 +53,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //Lista
+        xCords.add(mutableListOf())
+        yCords.add(mutableListOf())
         //Firma
         firma = findViewById(R.id.drawing_view)
         dibFun.dibini(firma)//Inicializar los parametros del drawingView
@@ -83,6 +86,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 jsonFun.prosData(contDat,xCords,yCords,dbug,cnt)// Procesamiento de la informacion para el envio
                 Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
+                var clean = false
+                do {
+                    xCords.clear()
+                    yCords.clear()
+                    if (xCords.isEmpty() && yCords.isEmpty() && xCordsGet.isEmpty() && yCordsGet.isEmpty()) {
+                        if (dbug) {
+                            Log.d("Cordenadas", "Cordenadas: $cnt Limpias")
+                        }
+                        clean = true
+                    }
+                }while (!clean)
             } catch (e: Exception){
                 if (dbug){
                     Log.d("Error Send", "Error: ${e.message}")
@@ -158,17 +172,25 @@ class MainActivity : AppCompatActivity() {
         firma.setOnTouchListener { view, event ->//
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    Log.d("Touch cord", "Pulsacion")
                     bRed = false
                     bUnd = true
                     btnRed.isEnabled = false
                     btnUn.isEnabled = true
-                    if (xCords.getOrNull(touch)?.isNotEmpty() == true) {
-                        xCords.removeAt(touch)
-                        yCords.removeAt(touch)
+                    if (dbug) {
+                        Log.d("Touch cord", "Pulsacion: $touch")
+                    }
+                    if (xCords[touch].isNotEmpty() && xCords[touch].isNotEmpty()) {
                         if (dbug) {
                             Log.d("Touch cord", "Datos sobreescritos")
                         }
+                        xCords[touch].clear()
+                        yCords[touch].clear()
+                    } else {
+                        if (dbug) {
+                            Log.d("Touch cord", "Nueva lista")
+                        }
+                        xCords.add(mutableListOf())
+                        yCords.add(mutableListOf())
                     }
                 }
                 MotionEvent.ACTION_MOVE -> {
@@ -189,8 +211,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 MotionEvent.ACTION_UP -> {
-                    xCords.add(xCordsGet)
-                    yCords.add(yCordsGet)
+                    xCords[touch].addAll(xCordsGet)
+                    yCords[touch].addAll(yCordsGet)
+                    xCordsGet.clear()
+                    yCordsGet.clear()
                     touch++
                     if (dbug) {
                         Log.d("Touch cord", "Fin de la pulsacion siguiente posicion: $touch")

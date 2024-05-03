@@ -24,14 +24,16 @@ class DibFun {
             Log.d("Touch cord", "Rehacer")
         }
     }
-    fun dibCls(firma: drawingView, xCords: MutableList<MutableList<Int>>, ycords: MutableList<MutableList<Int>>, dbug: Boolean, btnScan: Button) {
+    fun dibCls(firma: drawingView, xCords: MutableList<MutableList<Int>>, yCords: MutableList<MutableList<Int>>, dbug: Boolean, btnScan: Button) {
         firma.clearDrawingBoard()
         xCords.clear()
-        ycords.clear()
+        yCords.clear()
+        xCords.add(mutableListOf())
+        yCords.add(mutableListOf())
         btnScan.isEnabled = false
         btnScan.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
         if (dbug){
-            if (xCords.isEmpty() && ycords.isEmpty()){
+            if (xCords.isEmpty() && yCords.isEmpty()){
                 Log.d("Touch cord", "Limpio")
             }
         }
