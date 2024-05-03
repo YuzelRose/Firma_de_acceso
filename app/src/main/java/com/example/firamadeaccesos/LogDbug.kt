@@ -72,18 +72,22 @@ class LogDbug {
     fun sendJData(key: String) {
         if (dbug) {
             Log.d("JSONSEND", "Enviando Json a $key")
+            Log.d("Pross", "Enviando Json a $key")
         }
     }
 
     fun failJSend(e: String) {
         if (dbug) {
             Log.d("JSONSEND", "Fallo al enviar JSON: $e")
+            Log.d("Pross", "Fallo al enviar JSON: $e")
+
         }
     }
 
     fun responseJSend(responseData: String?) {
         if (dbug) {
             Log.d("JSONSEND", "Respuesta: $responseData")
+            Log.d("Pross", "Respuesta: $responseData")
         }
     }
 }
