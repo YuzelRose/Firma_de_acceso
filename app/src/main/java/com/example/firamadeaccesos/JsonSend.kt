@@ -5,40 +5,36 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 
 class JsonSend {
     private val constURL = "https://djackpot.rodokizzzdev.com/digitalink/firmas/Enlace/recibir.php"
-    private var x = mutableListOf<MutableList<Int>>()
-    private var y = mutableListOf<MutableList<Int>>()
+    private var x = Array(5) { mutableListOf<Int>() }
+    private var y = Array(5) { mutableListOf<Int>() }
     private var cntpriv: Int = 0
     fun prosData(contDat: Array<String>, xCords: MutableList<MutableList<Int>>, yCords: MutableList<MutableList<Int>>, dbug: Boolean, cnt: Int) {
-        val key = constURL + "?access_key=" + contDat[0]
-        val xCord: List<Int> = xCords.flatten()
-        val yCord: List<Int> = yCords.flatten()
-        x.add(xCord.toMutableList())
-        y.add(yCord.toMutableList())
-        if (dbug) {
-            Log.d("JSONSEND","Arreglo numero: ${cntpriv+1}")
-            Log.d("JSONSEND","x: ${x[cntpriv]}")
-            Log.d("JSONSEND","y: ${y[cntpriv]}")
-        }
+        x[cntpriv].addAll(xCords.flatten())
+        y[cntpriv].addAll(yCords.flatten())
         cntpriv++
+        if (dbug) {
+            Log.d("JSONSEND","Arreglo numero: $cntpriv")
+            Log.d("JSONSEND","x: ${x[cntpriv-1]}")
+            Log.d("JSONSEND","y: ${y[cntpriv-1]}")
+        }
         if (cnt == 0) {
+            val key = constURL + "?access_key=" + contDat[0]
             if (dbug) {
                 Log.d("JSONSEND", "Enviando Json a $key")
             }
             sendJson(key,dbug,contDat[0])
-            cntpriv = 0
-            x.clear()
-            y.clear()
         }
     }
     private fun sendJson(key: String, dbug: Boolean, s: String) {
 
         val jsonObject = JSONObject().apply {//Creacion de un objeto JSON
-            put("xCord", x)
-            put("yCord", y)
+            put("xCord", JSONArray(x))
+            put("yCord", JSONArray(y))
         }
         val jsonBody = jsonObject.toString()
         val mediaType = "application/json; charset=utf-8".toMediaType()
