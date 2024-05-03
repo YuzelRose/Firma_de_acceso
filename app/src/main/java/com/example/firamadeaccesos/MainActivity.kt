@@ -5,7 +5,6 @@ package com.example.firamadeaccesos
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
@@ -21,14 +20,12 @@ import com.mihir.drawingcanvas.drawingView
 class MainActivity : AppCompatActivity() {
 
     // Mostrar los datos escaneados
-    private var dbug = true
     // Botones activados
     private var bRed = true
     private var bUnd = true
 
     private var touch: Int = 0
     private var cnt: Int = 0
-
 
     private var contDat: Array<String> = arrayOf("", "")
 
@@ -42,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     private val qrFun = QrFun()
     private val dibFun = DibFun()
     private val jsonFun = JsonSend()
+    /*Configuraciones*/
+    private val config = Config()
+    private val logDbug = LogDbug()
 
     private val xCords = mutableListOf<MutableList<Int>>()
     private val yCords = mutableListOf<MutableList<Int>>()
@@ -70,73 +70,45 @@ class MainActivity : AppCompatActivity() {
                 cnt--
                 txtCuenta.text = "Firmas faltantes: $cnt"
                 if (cnt <= 0) {//Reiniciar para resibir una nueva firma
-                    Toast.makeText(this,"Firmas completadas", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                    finish()
+                    config.reset(this)
                 }
-                if (dbug){// Se muestran las cordenadas guardadas
-                    for ((index, filaX) in xCords.withIndex()) {
-                        val filaY = yCords[index]
-                        for (i in filaX.indices) {
-                            Log.d("Cordenadas", "x: ${filaX[i]} y: ${filaY[i]}")
-                        }
-                    }
-                }
-                jsonFun.prosData(contDat,xCords,yCords,dbug,cnt)// Procesamiento de la informacion para el envio
-                Toast.makeText(this,"Datos enviados ",Toast.LENGTH_SHORT).show()
-                var clean = false
-                do {
-                    xCords.clear()
-                    yCords.clear()
-                    if (xCords.isEmpty() && yCords.isEmpty() && xCordsGet.isEmpty() && yCordsGet.isEmpty()) {
-                        if (dbug) {
-                            Log.d("Cordenadas", "Cordenadas: $cnt Limpias")
-                        }
-                        clean = true
-                    }
-                }while (!clean)
+                jsonFun.prosData(contDat,xCords,yCords,cnt)// Procesamiento de la informacion para el envio
+                Toast.makeText(this,"Datos guardados",Toast.LENGTH_SHORT).show()
+                xCords.clear()
+                yCords.clear()
             } catch (e: Exception){
-                if (dbug){
-                    Log.d("Error Send", "Error: ${e.message}")
-                }
-                Toast.makeText(this, "Error al enviar datos: ${e.message}", Toast.LENGTH_SHORT).show()
+                logDbug.error("btnSend",e.message)
+                Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show()
             } finally {
                 if (cnt > 0) {
-                    dibFun.dibCls(firma,xCords,yCords,dbug,btnSend)
+                    dibFun.dibCls(firma,xCords,yCords,btnSend)
                     touch = 0
                     bUnd = false
                     bRed = false
                     btnUn.isEnabled = false
                     btnRed.isEnabled = false
                     btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
-                    if (dbug) {
-                        Log.d("Touch cord", "Touch: $touch")
-                    }
+                    logDbug.touchMSG(touch,"")
                 }
             }
         }
         //limpiar
         btnCls = findViewById(R.id.btnCls)
         btnCls.setOnClickListener {
-            dibFun.dibCls(firma,xCords,yCords,dbug,btnSend)
+            dibFun.dibCls(firma,xCords,yCords,btnSend)
             touch = 0
             bUnd = false
             bRed = false
             btnUn.isEnabled = false
             btnRed.isEnabled = false
             btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
-            if (dbug) {
-                Log.d("Touch cord", "Touch: $touch")
-
-            }
+            logDbug.touchMSG(touch,"")
         }
         //Deshacer
         btnUn = findViewById(R.id.btnUn)
         btnUn.setOnClickListener {
             if (bUnd) {
-                dibFun.dibUn(firma,dbug)
+                dibFun.dibUn(firma)
                 touch--
                 if (touch>=0){
                     btnSend.isEnabled = false
@@ -146,26 +118,20 @@ class MainActivity : AppCompatActivity() {
                 bRed = true
                 btnUn.isEnabled = false
                 btnRed.isEnabled = true
-                if (dbug) {
-                    Log.d("Touch cord", "Touch: $touch")
-
-                }
+                logDbug.touchMSG(touch,"")
             }
         }
         //Rehacer
         btnRed = findViewById(R.id.btnRed)
         btnRed.setOnClickListener {
             if (bRed) {
-                dibFun.dibRed(firma,dbug)
+                dibFun.dibRed(firma)
                 touch++
                 bRed = false
                 bUnd = true
                 btnRed.isEnabled = false
                 btnUn.isEnabled = true
-                if (dbug) {
-                    Log.d("Touch cord", "Touch: $touch")
-
-                }
+                logDbug.touchMSG(touch,"")
             }
         }
 
@@ -176,36 +142,26 @@ class MainActivity : AppCompatActivity() {
                     bUnd = true
                     btnRed.isEnabled = false
                     btnUn.isEnabled = true
-                    if (dbug) {
-                        Log.d("Touch cord", "Pulsacion: $touch")
-                    }
                     if (xCords[touch].isNotEmpty() && xCords[touch].isNotEmpty()) {
-                        if (dbug) {
-                            Log.d("Touch cord", "Datos sobreescritos")
-                        }
                         xCords[touch].clear()
                         yCords[touch].clear()
+                        logDbug.touchMSG(touch,", Posición sobreescrita")
                     } else {
-                        if (dbug) {
-                            Log.d("Touch cord", "Nueva lista")
-                        }
+                        logDbug.touchMSG(touch,", nueva lista")
                         xCords.add(mutableListOf())
                         yCords.add(mutableListOf())
                     }
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    Log.d("Touch cord", "Arrastre")
                     val x = event.x.toInt()
                     val y = event.y.toInt()
                     if (x >= 0 && x <= firma.width && y >= 0 && y <= firma.height) {
                         xCordsGet.add(x)
                         yCordsGet.add(y)
-                        if (dbug) {
-                            Log.d("Touch cord", "Coordenadas: X: $x, Y: $y")
-                        }
+                        logDbug.cordsAsGet(x,y)
                         btnCls.isEnabled = true
                         btnUn.isEnabled = true
-                        btnRed.isEnabled = true
+                        btnRed.isEnabled = false
                         btnSend.isEnabled = true
                         btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFA5A0A0.toInt())
                     }
@@ -216,9 +172,7 @@ class MainActivity : AppCompatActivity() {
                     xCordsGet.clear()
                     yCordsGet.clear()
                     touch++
-                    if (dbug) {
-                        Log.d("Touch cord", "Fin de la pulsacion siguiente posicion: $touch")
-                    }
+                    logDbug.touchEnd(touch)
                 }
             }
             view.performClick()
@@ -245,14 +199,14 @@ class MainActivity : AppCompatActivity() {
                     qrFun.qrIniLec(this)
                 } else {
                     val usrIn = it.contents
-                    Toast.makeText(this, "Espere un poco", Toast.LENGTH_SHORT).show()
-                    contDat = qrFun.qrInf(usrIn, this,dbug)//Obtencion de los datos del QR
+                    contDat = qrFun.qrInf(usrIn, this)//Obtencion de los datos del QR
                     if (contDat[1] == "&"){
                         cnt=5
                         txtCuenta.text = "Firmas faltantes: $cnt"
                         txtCuenta.isVisible = true
                     } else{
                         cnt=1
+                        txtCuenta.text = ""
                         txtCuenta.isVisible = false
                     }
                 }
@@ -260,10 +214,8 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Lectura incorrecta", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            if (dbug){
-                Log.d("Error ActivityResult", "Error: ${e.message}")
-            }
-            Toast.makeText(this, "Error al resibir el QR: ${e.message}", Toast.LENGTH_SHORT).show()
+            logDbug.error("ActivityResult",e.message)
+            Toast.makeText(this, "Error al resibir el QR", Toast.LENGTH_SHORT).show()
         }
     }
 }
