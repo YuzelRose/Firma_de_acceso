@@ -6,7 +6,10 @@ Avances
 | MainActivity | 100% |
 | QrFun | 100% |
 | DivFun | 100% |
-| jsonFun | 90% |
+| jsonFun | 95% |
+| LogDbug | 95% |
+| QrFun | 95% |
+
 ----------------------------------------------------------
 | XML | Avance |
 |---|---|
@@ -15,17 +18,17 @@ Avances
 ----------------------------------------------------------
 Problemas a solucionar:
 ----------------------------------------------------------
-1. Comprobar que los datos esten llegando correctamente a su destino.
+1. Toast de respuesta.
 ----------------------------------------------------------
 Trabajando en:
 ----------------------------------------------------------
-1. Envio de datos.
+1. Encriptado del Json.
+2. Mostrar resultado del envio.
 ----------------------------------------------------------
 Comentarios:
 ----------------------------------------------------------
-1. El sistema está enviando los datos de forma correcta, solo falta hacer las comprobaciones pertinentes.
-2. Se espera terminar el desarrollo principal en breve.
-3. El Landscape actualmente no es considerada una prioridad 
+1. Se espera terminar el desarrollo principal en breve.
+2. El Landscape actualmente no es considerada una prioridad 
   pero se podria agregar en versiones futuras.
 --------------------------------------------------------------
 Agradecimientos:
