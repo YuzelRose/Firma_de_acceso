@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 
 class Config {
+
     private val logDbug = LogDbug()
     // URL SEND
     fun setURL(): String {
@@ -21,25 +22,24 @@ class Config {
         (contexto as Activity).finish()
     }
     // Result list
-    fun responseCode(responseData: String) {
+    fun responseCode(responseData: String):String {
         logDbug.responseCod(responseData)
-        val resStg: String = when (responseData) {
+        when (responseData) {
             "8765" -> {
-                "Datos recibidos correctamente"
+                return "Datos recibidos correctamente"
             }
 
             "5555" -> {
-                "Código QR caducado"
+                return "Código QR caducado"
             }
 
             "6543" -> {
-                "Fallo en el envío"
+                return "Fallo en el envío"
             }
 
             else -> {
-                "Error desconocido"
+                return "Error desconocido"
             }
         }
-        logDbug.responseCodMeaning(resStg)
     }
 }

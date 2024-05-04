@@ -72,23 +72,21 @@ class MainActivity : AppCompatActivity() {
                     config.reset(this)
                 }
                 txtCuenta.text = "Firmas faltantes: $cnt"
-                jsonFun.prosData(contDat,xCords,yCords,cnt)// Procesamiento de la informacion para el envio
+                jsonFun.prosData(contDat,xCords,yCords,cnt,this)// Procesamiento de la informacion para el envio
                 xCords.clear()
                 yCords.clear()
             } catch (e: Exception){
                 logDbug.error("btnSend",e.message)
                 Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show()
             } finally {
-                if (cnt > 0) {
-                    dibFun.dibCls(firma,xCords,yCords,btnSend)
-                    touch = 0
-                    bUnd = false
-                    bRed = false
-                    btnUn.isEnabled = false
-                    btnRed.isEnabled = false
-                    btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
-                    logDbug.touchMSG(touch,"")
-                }
+                dibFun.dibCls(firma,xCords,yCords,btnSend)
+                touch = 0
+                bUnd = false
+                bRed = false
+                btnUn.isEnabled = false
+                btnRed.isEnabled = false
+                btnSend.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF736E6E.toInt())
+                logDbug.touchMSG(touch,"")
             }
         }
         //limpiar
