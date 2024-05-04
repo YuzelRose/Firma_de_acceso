@@ -46,12 +46,12 @@ class JsonSend {
             override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {//Fracaso
                 val fail = e.printStackTrace().toString()
                 logDbug.failJSend(fail)
+
             }
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {//Éxito
                 val responseBody = response.body?.string() ?: ""
                 val responseCod = responseBody.take(4)
-                val httpResponse = config.responseCode(responseCod)
-                logDbug.responseCodMeaning(httpResponse)
+                config.responseCode(responseCod)
             }
         })
     }

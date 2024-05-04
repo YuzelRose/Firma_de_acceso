@@ -3,7 +3,6 @@ package com.example.firamadeaccesos
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 
 class Config {
     private val logDbug = LogDbug()
@@ -22,18 +21,25 @@ class Config {
         (contexto as Activity).finish()
     }
     // Result list
-    fun responseCode(responseData: String): String {
+    fun responseCode(responseData: String) {
         logDbug.responseCod(responseData)
-        var resStg = "Código 404: Error desconocido"
-        if (responseData.equals("8765")) {
-            resStg = "Datos recibidos correctamente"
+        val resStg: String = when (responseData) {
+            "8765" -> {
+                "Datos recibidos correctamente"
+            }
+
+            "5555" -> {
+                "Código QR caducado"
+            }
+
+            "6543" -> {
+                "Fallo en el envío"
+            }
+
+            else -> {
+                "Error desconocido"
+            }
         }
-        if (responseData.equals("5555")) {
-            resStg = "Código QR caducado"
-        }
-        if (responseData.equals("6543")) {
-            resStg = "Fallo en el envío"
-        }
-        return resStg
+        logDbug.responseCodMeaning(resStg)
     }
 }
