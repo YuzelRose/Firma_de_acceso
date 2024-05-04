@@ -68,12 +68,11 @@ class MainActivity : AppCompatActivity() {
         btnSend.setOnClickListener {
             try {
                 cnt--
-                txtCuenta.text = "Firmas faltantes: $cnt"
                 if (cnt <= 0) {//Reiniciar para resibir una nueva firma
                     config.reset(this)
                 }
+                txtCuenta.text = "Firmas faltantes: $cnt"
                 jsonFun.prosData(contDat,xCords,yCords,cnt)// Procesamiento de la informacion para el envio
-                Toast.makeText(this,"Datos guardados",Toast.LENGTH_SHORT).show()
                 xCords.clear()
                 yCords.clear()
             } catch (e: Exception){

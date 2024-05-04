@@ -1,5 +1,6 @@
 package com.example.firamadeaccesos
 
+
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,12 +11,11 @@ import org.json.JSONObject
 class JsonSend {
     private val config = Config()
     private val logDbug = LogDbug()
-
     private lateinit var constURL: String
     private var x = Array(5) { mutableListOf<Int>() }
     private var y = Array(5) { mutableListOf<Int>() }
     private var cntpriv: Int = 0
-    fun prosData(contDat: Array<String>, xCords: MutableList<MutableList<Int>>, yCords: MutableList<MutableList<Int>>, cnt: Int) {
+    fun prosData(contDat: Array<String>, xCords: MutableList<MutableList<Int>>, yCords: MutableList<MutableList<Int>>, cnt: Int ) {
         x[cntpriv].addAll(xCords.flatten())
         y[cntpriv].addAll(yCords.flatten())
         cntpriv++
@@ -27,8 +27,7 @@ class JsonSend {
             sendJson(key,contDat[0])
         }
     }
-    private fun sendJson(key: String, s: String) {
-
+    private fun sendJson(key: String, s: String){
         val jsonObject = JSONObject().apply {//Creacion de un objeto JSON
             put("xCord", JSONArray(x))
             put("yCord", JSONArray(y))
@@ -44,12 +43,15 @@ class JsonSend {
             .build()
 
         client.newCall(request).enqueue(object : okhttp3.Callback {//Ejecucion y respuestas
-            override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {//Negativa
-                logDbug.failJSend(e.printStackTrace().toString())
+            override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {//Fracaso
+                val fail = e.printStackTrace().toString()
+                logDbug.failJSend(fail)
             }
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {//Positiva
-                val responseData = response.body?.string()
-                logDbug.responseJSend(responseData)
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {//Éxito
+                val responseBody = response.body?.string() ?: ""
+                val responseCod = responseBody.take(4)
+                val httpResponse = config.responseCode(responseCod)
+                logDbug.responseCodMeaning(httpResponse)
             }
         })
     }

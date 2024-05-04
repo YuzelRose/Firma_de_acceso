@@ -84,10 +84,17 @@ class LogDbug {
         }
     }
 
-    fun responseJSend(responseData: String?) {
+    fun responseCod(responseData: String) {
         if (dbug) {
-            Log.d("JSONSEND", "Respuesta: $responseData")
-            Log.d("Pross", "Respuesta: $responseData")
+            Log.d("JSONSEND", "Codigo: $responseData")
+            Log.d("Pross", "Codigo: $responseData")
+        }
+    }
+
+    fun responseCodMeaning(httpResponse: String) {
+        if (dbug) {
+            Log.d("JSONSEND", httpResponse)
+            Log.d("Pross", httpResponse)
         }
     }
 }
